@@ -12,7 +12,7 @@ import com.study.member.vo.Member;
 import com.study.servlet.IController;
 
 public class MemberDeleteController implements IController {
-
+//
 	@Override
 	public String process(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 

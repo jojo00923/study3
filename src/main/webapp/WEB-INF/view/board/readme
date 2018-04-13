@@ -1,0 +1,26 @@
+--생성하실 정보
+
+vo : com.study.board.vo : Board
+DAO : com.study.board.dao : BoardDaoJDBC
+	+ getBoardCount(Connection conn)
+	+ getBoardList(Connection conn)
+	+ getBoard(Connection conn, int bo_no)
+	+ insertBoard(Connection conn, Board board)
+	+ updateBoard(Connection conn, Board board)
+	
+
+Service : com.study.board.service : BoardServiceImpl
+	+ getBoardCount(Connection conn)
+	+ getBoardList()
+	+ getBoard(int bo_no)
+	+ registBoard(Board board)
+	+ modifyBoard(Board board)	
+	
+--
+1.PagingVO예 페이지블럭 관련 구현 하거나
+2.Edit/Form 화면에서 "내용" 영역에 있는 것을 위지웍에디터로 바꿔서 구현
+네이버, 다음, 섬머노트, ck 에디터같은..
+
+언니 지금 뭐하는거옝
+저게뭔지 몰라아ㅛ
+아까 페이지 넘기는거 아니죠

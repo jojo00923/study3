@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+<!-- 211p -->
+	<!-- 공통기능 빈등록 -->
+	<bean id="logger" class="com.study.spring.test.aop.LoggingAdvice" />
+	
+	<!-- 일반 빈 등록 -->
+	<bean id="target" class="com.study.spring.test.aop.TargetObject" />
+
+	<!-- execution(public * com.study.*.service.*.*(..)) -->
+
+	<aop:config>
+		<aop:aspect ref="logger">
+			<aop:pointcut expression="execution(* total(..))" id="pc"/>
+			<aop:before method="logging" pointcut-ref="pc"/>
+			<aop:around method="aroundMethod" pointcut-ref="pc"/>
+		</aop:aspect>
+	</aop:config>
+
+
+
+
+
+
+</beans>

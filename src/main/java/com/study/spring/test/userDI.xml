@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+	<bean id="phone" class="com.study.spring.test.AndroidPhone" >
+		<property name="address"> <!-- 단순한객체면 value 쓸 수도 있는거고 ..list쓸수도 있다 -->
+			<list>
+				<value>이민경</value>
+				<value>남솔</value>
+				<value>손정완</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="iphone" class="com.study.spring.test.IPhone">
+		<property name="address">
+			<list>
+				<value>나혜진</value>
+				<value>조아라</value>
+				<value>김연임</value>
+			</list>
+		</property>
+	</bean>
+
+<!-- 더 줄인 방식 c:name-space나 p:name-space -> 쓰려면 아래 namespaces에 들어가서 p를 추가필수. 추가하면 p태그가 위에 붙는다!-->
+ <!-- init-method="init" 초기화될때 init 메서드 콜해줘 -->	
+	<bean id="userDI" 
+				class="com.study.spring.test.UserDI" 
+				init-method="init"
+				destroy-method="close"
+				p:name="홍길동"
+				p:phone-ref="phone"
+				/>
+
+
+<!-- 줄인 방식 -->
+	<!-- <bean id="userDI" class="com.study.spring.test.UserDI" >
+		<property name="phone" ref="iphone" />
+		<property name="name" value="세종대왕" />
+	</bean> -->
+
+<!-- 원래방식 -->		
+<!-- 	<bean id="userDI" class="com.study.spring.test.UserDI" >
+		<property name="phone"> UserDI의 setPhone을 의미함.
+			<ref bean="iphone"/> 거기넘겨줄값임.phone, iphone 여기에서 바꿈
+		</property>
+		<property name="name">
+		 <value>혜진</value>
+		</property>
+	</bean> -->
+
+</beans>

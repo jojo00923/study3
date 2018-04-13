@@ -1,0 +1,63 @@
+select '192.168.3.' || ceil(dbms_random.value(0, 255)) from dual;
+--무조건 정수로 만드는 천장함수 ceil
+
+-- 페이징처리에 뭘 사용 할 건지?
+-- 윈도우함수(=분석함수)를 지원하는 DBMS 기준: row_number,(sql server, oracle 등) 
+-- 각 DB회사마다 예전부터 쓰던 걸 활용해도 된다.
+-- oracle : rownum
+-- mysql : limit
+-- sqlserver :top
+-- mssql 2000버전 : top
+
+--1.oracle 오라클 페이징쿼리 예시
+select rownum, bo_no, bo_ip from tb_board where rownum <= 10; --1p
+--rownum은 2p가 안된다는 치명적 단점이 있다.
+select rownum, bo_no, bo_ip from tb_board where rownum > 10; --rownum이 1인데 10보다 큰걸 검색하니깐 조건이 맞지않ㅎ은 1~ 10까지를 폐기, 근데 11이 1로 됨. 그니깐 다 1이되서 삭제됨
+
+
+--그래서 사람들이 아예 테이블을 만들어서 인라인 뷰를 만드는 법을 새각함. 17일자에 설명 있음.
+select * from (select rownum rn, bo_no, bo_ip from tb_board) a --from절에 쓰는 서브쿼리는 인라인뷰라고 부름~
+--where rn > 10 and rn <= 20;
+where rn between 11 and 20; --보통 between을 많이 쓴다.
+
+--select구문의 orderby절은 가장 늦게 실행된다. 그래서 orderby를 넣으면 rn이 의미가 없어지게 된다.
+--그래서 인라인뷰 안에 다시 인라인뷰가 들어간다.
+
+--1.1 rownum 의사컬럼 사용
+select * from (select rownum rn, bo_no, bo_ip 
+               from (select bo_no, bo_ip 
+                     from tb_board 
+                     /* 검색조건 (where절 등) */
+                     order by bo_ip asc
+                     )a
+               )b      
+where rn between 11 and 20;
+
+-- 실제 예시
+select * from (select rownum rn, bo_no, bo_ip 
+               from (select bo_no, bo_ip 
+                     from tb_board 
+                     where bo_writer like '연진아빠'
+                     order by bo_ip asc
+                     )a
+               )b      
+where rn between 11 and 20;
+
+--1.2 분석함수 row_number() over() 이용, 분석함수를 where절에 못써서 한번 둘러싸는것.
+select * 
+from (select row_number() over(order by bo_ip asc) rn, bo_no, bo_ip 
+        from tb_board
+         /* 검색조건 (where절 등) */
+        )a
+where rn between 11 and 20;        
+        
+        
+
+--2.mysql 문법
+select * from tb_board order by col limit 0, 10; --시작하는 인덱스, 가져올 레코드수(length) 
+
+
+
+
+
+

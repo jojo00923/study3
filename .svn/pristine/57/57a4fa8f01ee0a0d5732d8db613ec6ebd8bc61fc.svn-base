@@ -1,0 +1,20 @@
+package com.study.spring.test;
+
+import java.util.List;
+
+public class AndroidPhone implements Phone {
+
+	@Override
+	public void calling() {
+		System.out.println("안드로이드: 전화왔어요~");
+		
+	}
+
+	@Override
+	public List<String> getAddress() {
+		return null;
+	}
+
+	
+	
+}

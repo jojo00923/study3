@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!--  // resource/board/member.xml -->  
+<mapper namespace="common">
+
+<!-- // 페이징쿼리 전반부 -->
+	<sql id="prePaging">
+		SELECT *                         
+			FROM  (SELECT rownum rn, a.*    
+			 				 FROM (                    
+	
+	</sql>
+	<!-- //페이징쿼리 후반부 -->
+ 	<sql id="postPaging">
+		                )a   
+     				 )b             
+			WHERE rn between #{startRow} and #{endRow} 
+	<!-- //boardSearch가 getStartRow를 불러온다 -->
+	</sql>
+  
+</mapper>

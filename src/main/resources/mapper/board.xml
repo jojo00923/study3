@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!--  // resource/board/member.xml -->  
+<mapper namespace="com.study.board.dao.IBoardDao">
+<!-- MyBatis가 인터페이스에 있는 메서드 이름 그대로 쓰면 나중에 자동으로 해줌.
+parameterType은 하나만 쓸수 있음, ,로 연결하면 안됨. 그래서 주로 맵씀.
+db 하나하나의 변수를 resultType에 담는다. (Member에 담았으니깐 멤버 써주면 됨. 완전한 주소로) -->
+
+	<sql id="boardListWhereClause">
+	<where>	
+		<if test="searchWord != null and searchWord != '' "><!--동적 sql-->
+			<choose>
+				<when test="searchType == 'all'">
+					bo_title LIKE '%' || #{searchWord} || '%'
+			OR	bo_writer LIKE '%' || #{searchWord} || '%'
+			OR	bo_content LIKE '%' || #{searchWord} || '%'
+				</when>
+				<when test="searchType == 'bo_title'">
+				bo_title LIKE '%' || #{searchWord} || '%'
+				</when>
+				<when test="searchType == 'bo_writer'">
+				bo_writer LIKE '%' || #{searchWord} || '%'
+				</when>
+				<when test="searchType == 'bo_content'">
+				bo_content LIKE '%' || #{searchWord} || '%'
+				</when>
+			</choose>
+		</if>	 
+		</where>      
+	</sql>
+
+	<!-- 목록보기 -->
+  <select id="getBoardList" parameterType="boardSearch" resultType="board" > 
+  <include refid="common.prePaging"/> <!-- include 똑같은 구문을 계속 쓰기 그러니깐 별도로 빼서 관리함.
+  																		index에서 파일 연결할 때 썼었음.. -->                                                 
+	 SELECT                                                      
+	   		 bo_no                                                  
+	  		,bo_title                                               
+	  		,bo_writer                                              
+	  		,bo_passwd                                              
+	  		,bo_email                                              
+	 		 	,bo_ip                                                  
+	  		,bo_read_cnt                                            
+	  		,TO_CHAR(bo_reg_date, 'YYYY/MM/DD') AS bo_reg_date     
+	  		,TO_CHAR(bo_mod_date, 'YYYY/MM/DD') AS bo_mod_date    
+	  FROM TB_BOARD         
+	  <include refid="boardListWhereClause"/>                                      
+	  ORDER BY bo_no DESC   
+	  <include refid="common.postPaging"/>                                                               
+  </select>
+  
+	<!-- 기존 BoardDaoJDBC 구문 확인 -->
+	<select id="getBoardCount" parameterType="boardSearch" resultType="int" >                                          
+		SELECT count(*) 
+			FROM tb_board
+			<include refid="boardListWhereClause"/>                                                        
+  </select>
+  
+  <!-- 상세조회 -->
+  <!-- parameterType="int"처럼 primitive타입은 생략 가능 1개밖에 안넘어와서 생략해두됨 -->
+  <select id="getBoard" parameterType="int" resultType="Board" >                                                 
+	 SELECT                                                      
+	   		 bo_no                                                  
+	  		,bo_title                                               
+	  		,bo_writer                                              
+	  		,bo_passwd                                              
+	  		,bo_email                                              
+	  		,bo_content 
+	 		 	,bo_ip                                                  
+	  		,bo_read_cnt                                            
+	  		,TO_CHAR(bo_reg_date, 'YYYY/MM/DD') AS bo_reg_date     
+	  		,TO_CHAR(bo_mod_date, 'YYYY/MM/DD') AS bo_mod_date    
+	  FROM TB_BOARD                                               
+	  WHERE bo_no = #{메렁}
+  </select>
+
+<!-- update, insert, delete는 무조건 int를 반환하기 때문에 resultType을 쓸 필요 없쪄 -->
+	<insert id="insertBoard" parameterType="board" > <!-- board가 넘어온객체임.  -->                                                
+	<selectKey keyProperty="bo_no" order="BEFORE" resultType="int"> <!-- 넘어온 객체(board)에 넣어서 결과값을 보노에 넣겠다. -->
+    select seq_board.nextval FROM dual
+  </selectKey>	                           
+	INSERT INTO TB_BOARD ( 
+	      bo_no           
+	    , bo_title         
+	    , bo_writer        
+	    , bo_passwd     
+	    , bo_email        
+	    , bo_content     
+	    , bo_ip          
+	    , bo_read_cnt      
+	    , bo_reg_date     
+	    , bo_mod_date    
+			)                  
+	VALUES 	(           
+			 #{bo_no}  <!-- seq_board.nextval이었는데 바꿈. 시퀀스를 별도로 실행시켜 담을곳 지정해서, 시퀀스가 아니라 객체값#{bo_no}을 써줌 -->		  
+			,#{bo_title} 		             
+			,#{bo_writer}		            
+			,#{bo_passwd}		            
+			,#{bo_email}	             
+			,#{bo_content}		             
+			,#{bo_ip}		             
+			,0		            
+			,sysdate		      
+			,sysdate		      
+			)		             
+	                          
+	   </insert>
+  
+  <update id="updateBoard" parameterType="board"  >
+  update tb_board         
+   set                    
+       bo_title = #{bo_title}     
+      ,bo_writer =  #{bo_writer}          
+      ,bo_content =  #{bo_content}        
+      ,bo_mod_date = sysdate 
+ 	where bo_no =  #{bo_no}          
+  </update>
+	 
+  
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

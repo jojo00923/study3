@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- // resource/mapper/member.xml -->  
+<!-- //네임스페이스는 다른 매퍼와 구분을 해줌.
+		 // 명칭은 아무렇게나 해도 됨. 불행하게도 현재 권장명칭은 인터페이스 이름임.  -->
+
+<mapper namespace="com.study.member.dao.IMemberDao">
+<!-- MyBatis가 인터페이스에 있는 메서드 이름 그대로 쓰면 나중에 자동으로 해줌.
+db 하나하나의 변수를 resultType에 담는다. (Member에 담았으니깐 멤버 써주면 됨. 완전한 주소로) -->
+
+  <select id="getMemberList" resultType="member" > 
+  SELECT 			                                       
+ 				 mem_id	                                    
+ 				,mem_name                                     
+ 				,mem_pwd                                        
+ 				,mem_phone                                      
+ 				,mem_email                                      
+ 				,to_char(reg_date, 'YYYY/MM/DD') as reg_date   
+  FROM tb_member1  	                               
+  ORDER BY reg_date DESC                            
+  </select>
+  
+  <!--프리미티브?? 스트링, 인트 같은거는 파라미터타입을 안써도 됨. 알아서 들어감. 그래서 #{aro}라고 쓴거임 의미없음. 
+  #{}가 pstmt.setString(), pstmt.setInt() 와 같은걸로 유추됨.  mem_id as memId라고써줌 다르다면~mapper_precamel???을 쓰면 알아서 setMemId찾아서 바꿔줌
+  parameterType은 메서드가 받아오는 객체??MemberDaoJDBC의 public Member getMember(Connection conn, String mem_id)<-얘를 말함. -->
+  <select id="getMember" parameterType="String" resultType="member">
+  SELECT 			                                       
+ 				 mem_id               
+ 				,mem_name                                     
+ 				,mem_pwd                                        
+ 				,mem_phone                                      
+ 				,mem_email                                      
+ 				,to_char(reg_date, 'YYYY/MM/DD HH24:MI') as reg_date   
+  FROM tb_member1  	                                
+  WHERE mem_id = #{aro} 
+  </select>
+  <!--   as memId  -->
+  <insert id="insertMember"  parameterType="member" />
+  <!--select문이 아닌경우에는 int형으로 받아오기 때문에   -->
+  <!--#{mem_name} 가 member.getMem_name()  -->
+  <update id="updateMember" parameterType="member" >
+  UPDATE tb_member1    
+   SET mem_name = #{mem_name}  
+     , mem_phone = #{mem_phone}
+     , mem_email = #{mem_email}
+ 	WHERE mem_id = #{mem_id}
+ 	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

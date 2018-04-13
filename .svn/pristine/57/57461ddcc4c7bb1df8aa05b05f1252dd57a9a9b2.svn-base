@@ -1,0 +1,23 @@
+package com.study.spring.test;
+
+public class UserDI {
+	// DI를 통해서 객체 받기(new -source -setter만 받아오기)
+	
+	Phone phone;
+	String  name;
+	
+	public void info() {
+		System.out.println("내이름은 " + name);
+		phone.calling();
+	}
+
+	public void setPhone(Phone phone) {
+		this.phone = phone;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+
+}
